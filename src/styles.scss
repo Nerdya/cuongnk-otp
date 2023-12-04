@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: sofia-light;
+  src: url(../src/assets/fonts/sofia/sofia_light.otf);
+}
+
+@font-face {
+  font-family: sofia;
+  src: url(../src/assets/fonts/sofia/sofia_regular.otf);
+}
+
+@font-face {
+  font-family: sofia-medium;
+  src: url(../src/assets/fonts/sofia/sofia_medium.otf);
+}
+
+@font-face {
+  font-family: sofia-semibold;
+  src: url(../src/assets/fonts/sofia/sofia-semibold.otf);
+}
+
+@font-face {
+  font-family: sofia-bold;
+  src: url(../src/assets/fonts/sofia/sofia_bold.otf);
+}

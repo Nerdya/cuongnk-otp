@@ -1,0 +1,115 @@
+<section class="banner">
+  <div class="container group-submit">
+    <div class="row">
+      <div class="registration-form otp-form" *ngIf="!(resendCounter === 0 && (numberLimit === 0 || count === 0))">
+        <div *ngIf="partner?.monitorWelcome" class="ql-editor" [innerHTML]="partner?.monitorWelcome"></div>
+        <p *ngIf="!partner?.monitorWelcome" class="form-title">
+          {{'CHÀO MỪNG QUÝ KHÁCH ĐẾN VỚI HỆ THỐNG XÁC THỰC HỒ SƠ CỦA ' + partner?.shortName}}
+        </p>
+        <p class="form-subtitle">
+          Quý khách vui lòng nhập mã OTP đã gửi về số điện thoại của quý khách để xác nhận
+        </p>
+        <div class="row">
+          <div class="col-12 text-right otp-remain">
+            <p *ngIf="numberLimit < 3 && numberLimit > 0 && count > 0">
+              Bạn còn <span>{{numberLimit}}</span> lần nhập OTP
+            </p>
+          </div>
+        </div>
+        <form class="form-otp" [formGroup]="OTPForm">
+          <div class="box-input">
+            <div class="item-input">
+              <input maxLength="1" nz-input type="tel" formControlName="input0" id="input0" appOnlyNumber
+                     (paste)="onPaste($event)" (input)="iOSAutofill($event)" (keyup)="onKeyup($event, 0)"/>
+            </div>
+            <div class="item-input">
+              <input nz-input maxLength="1" type="tel" formControlName="input1" id="input1" appOnlyNumber
+                     (paste)="onPaste($event)" (input)="iOSAutofill($event)" (keyup)="onKeyup($event, 1)"/>
+            </div>
+            <div class="item-input">
+              <input nz-input maxLength="1" type="tel" formControlName="input2" id="input2" appOnlyNumber
+                     (paste)="onPaste($event)" (input)="iOSAutofill($event)" (keyup)="onKeyup($event, 2)"/>
+            </div>
+            <div class="item-input">
+              <input nz-input maxLength="1" type="tel" formControlName="input3" id="input3" appOnlyNumber
+                     (paste)="onPaste($event)" (input)="iOSAutofill($event)" (keyup)="onKeyup($event, 3)"/>
+            </div>
+            <div class="item-input">
+              <input nz-input maxLength="1" type="tel" formControlName="input4" id="input4" appOnlyNumber
+                     (paste)="onPaste($event)" (input)="iOSAutofill($event)" (keyup)="onKeyup($event, 4)"/>
+            </div>
+            <div class="item-input">
+              <input nz-input maxLength="1" type="tel" formControlName="input5" id="input5" appOnlyNumber
+                     (paste)="onPaste($event)" (input)="iOSAutofill($event)" (keyup)="onKeyup($event, 5)"/>
+            </div>
+          </div>
+        </form>
+        <div class="box-noti">
+          <p class="time-remain" *ngIf="numberLimit && numberLimit !== 0 && count > 0 ">
+            <span>
+                <img src="../../assets/img/icon-phone.png" alt=""/>
+                Thời gian hiệu lực của mã: <span class="time-second">{{counter$ | async}} giây</span>
+            </span>
+          </p>
+          <p class="incorrect-otp" *ngIf="numberLimit && numberLimit !== 0 && count < 1">
+            Mã OTP hết hiệu lực
+          </p>
+          <p class="incorrect-otp" *ngIf="submitOTPFalse && numberLimit !== 0 && count > 0">
+            Bạn đã nhập sai mã OTP
+          </p>
+          <p class="incorrect-otp" *ngIf="!OTPValid && count > 0">
+            Mã OTP không đúng định dạng
+          </p>
+          <p class="incorrect-otp" *ngIf="OTPEmpty && count > 0">
+            Vui lòng nhập mã OTP
+          </p>
+          <p class="incorrect-otp" *ngIf="numberLimit === 0">
+            Bạn đã nhập sai mã OTP quá số lần quy định.<br/>
+            Vui lòng lấy mã OTP mới
+          </p>
+          <p *ngIf="resendCounter > 0 && (count <= 150 || numberLimit === 0)" class="resend-otp">
+            <a (click)="resendOTP()">Gửi lại mã OTP</a>
+          </p>
+        </div>
+        <div class="box-action">
+          <div class="row">
+            <div class="col-12 text-center">
+              <button class="btn-common1" nz-button
+                      [class.default]="!partner?.baseColor"
+                      [style.background-color]="partner?.baseColor ? partner?.baseColor : ''"
+                      nzType="primary" (click)="submitOTP()" [nzLoading]="loading"
+                      [disabled]="numberLimit === 0 || count < 1 || isOTPVerified">
+                Xác nhận kết nối
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="registration-form otp-form otp-form-fail"
+           *ngIf="resendCounter === 0 && (numberLimit === 0 || count === 0)">
+        <p class="text-center box-icon">
+          <svg class="icon-info" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512; width: 50px" xml:space="preserve">
+            <path style="fill: #f59b26;"
+                  d="M256,512c-68.38,0-132.667-26.629-181.02-74.98C26.629,388.667,0,324.38,0,256  S26.629,123.333,74.98,74.98C123.333,26.629,187.62,0,256,0s132.667,26.629,181.02,74.98C485.371,123.333,512,187.62,512,256  s-26.629,132.667-74.98,181.02C388.667,485.371,324.38,512,256,512z"/>
+            <path style="fill: #f59b26;"
+                  d="M437.02,74.98C388.667,26.629,324.38,0,256,0v512c68.38,0,132.667-26.629,181.02-74.98  C485.371,388.667,512,324.38,512,256S485.371,123.333,437.02,74.98z"/>
+            <path style="fill:#FFFFFF;"
+                  d="M256,185c-30.327,0-55-24.673-55-55s24.673-55,55-55s55,24.673,55,55S286.327,185,256,185z M301,395  V215H191v30h30v150h-30v30h140v-30H301z"/>
+            <g>
+              <path style="fill:#fff;" d="M256,185c30.327,0,55-24.673,55-55s-24.673-55-55-55V185z"/>
+              <polygon style="fill:#fff;" points="301,395 301,215 256,215 256,425 331,425 331,395  "/>
+            </g>
+          </svg>
+        </p>
+        <p class="title-fail">Xác nhận OTP không thành công</p>
+        <p class="des-fail">Bạn vui lòng khai báo lại thông tin đăng ký tài khoản</p>
+        <p class="text-center">
+          <button class="btn-return-otp btn-common"
+                  [class.default]="!partner?.baseColor"
+                  [style.background-color]="partner?.baseColor ? partner?.baseColor : ''" (click)="back()">Quay lại
+          </button>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
