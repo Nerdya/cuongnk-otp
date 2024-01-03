@@ -81,7 +81,7 @@ export class OtpComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  iOSAutofill(event: any): void {
+  onInput(event: any): void {
     if (this.pasted) {
       return;
     }
@@ -92,6 +92,9 @@ export class OtpComponent implements OnInit {
       for (let i = 0; i < 6; i++) {
         OTPFormControls[`input${i}`].patchValue(OTPNumbers[i]);
       }
+
+      const element = this.renderer.selectRootElement('#input5');
+      element.focus();
     }
   }
 

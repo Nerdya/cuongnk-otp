@@ -12,11 +12,7 @@ export class OnlyNumberDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.onlyNumber === 'phoneNumber') {
-      this.characterLimit = 10;
-      return;
-    }
-    this.characterLimit = 12;
+    this.characterLimit = 1;
   }
 
   @HostListener('keydown', ['$event'])
