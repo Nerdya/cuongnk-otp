@@ -63,6 +63,10 @@ export class OtpComponent implements OnInit {
     return value.trim().length === 6 && !isNaN(Number(value));
   }
 
+  isValidKeyupInput(value: string): boolean {
+    return value.trim().length === 1 && !isNaN(Number(value));
+  }
+
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
     const clipboardData = event.clipboardData || (window as any).clipboardData;
@@ -73,7 +77,6 @@ export class OtpComponent implements OnInit {
       for (let i = 0; i < 6; i++) {
         OTPFormControls[`input${i}`].patchValue(OTPNumbers[i]);
       }
-
       const element = this.renderer.selectRootElement('#input5');
       element.focus();
       this.pasted = true;
@@ -81,20 +84,27 @@ export class OtpComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  onInput(event: any): void {
-    if (this.pasted) {
+  // This function handles paste event from Android/iOS keyboard's clipboard
+  // while avoid tampering keyup events
+  onInput(event: any, inputId: number): void {
+    console.log('onInput', event);
+    event.preventDefault();
+    const pastedText = event.target.value.toString();
+    const OTPFormControls = this.OTPForm.controls;
+    // Return if the event is the (paste) event or the valid keyup event
+    if (this.pasted || this.isValidKeyupInput(pastedText)) {
       return;
     }
-    const pastedText = event.target.value.toString().trim();
     if (this.isValidOTP(pastedText)) {
-      const OTPFormControls = this.OTPForm.controls;
       const OTPNumbers = pastedText.split('') || [];
       for (let i = 0; i < 6; i++) {
         OTPFormControls[`input${i}`].patchValue(OTPNumbers[i]);
       }
-
       const element = this.renderer.selectRootElement('#input5');
       element.focus();
+    } else {
+      // Delete the pasted string if it isn't valid but a number string, etc.
+      OTPFormControls[`input${inputId}`].patchValue('');
     }
   }
 
