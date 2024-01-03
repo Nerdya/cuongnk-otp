@@ -60,11 +60,11 @@ export class OtpComponent implements OnInit {
   }
 
   isValidOTP(value: any): boolean {
-    return value.trim().length === 6 && !isNaN(Number(value));
+    return value.trim().length === 6 && /^[0-9]+$/.test(value);
   }
 
   isValidKeyupInput(value: string): boolean {
-    return value.trim().length === 1 && !isNaN(Number(value));
+    return value.trim().length === 1 && /^[0-9]+$/.test(value);
   }
 
   onPaste(event: ClipboardEvent): void {
