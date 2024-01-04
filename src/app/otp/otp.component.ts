@@ -1,6 +1,6 @@
 import {Router} from '@angular/router';
 import {ChangeDetectorRef, Component, OnInit, Renderer2} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/internal/Observable';
 import {timer} from 'rxjs';
 import {map, take} from 'rxjs/operators';
@@ -107,21 +107,18 @@ export class OtpComponent implements OnInit {
   }
 
   onKeydown(event: KeyboardEvent, inputId: number): void {
+    event.preventDefault();
     if (isNaN(Number(event.key)) && event.key !== 'Backspace') {
-      event.preventDefault();
       return;
     }
     this.isKeydownOn = true;
     // console.log('onKeydown', event);
-    // Determine the ID of the next input
-    const nextInputId = event.key === 'Backspace' ? Math.max(0, inputId - 1) : Math.min(5, inputId + 1);
-    const selector = `#input${nextInputId}`;
-    // Update the value of the current input
     const control = this.OTPForm.controls[`input${inputId}`];
     if (control) {
       control.patchValue(event.key === 'Backspace' ? '' : event.key);
     }
-    // Set focus to the next input
+    const nextInputId = event.key === 'Backspace' ? Math.max(0, inputId - 1) : Math.min(5, inputId + 1);
+    const selector = `#input${nextInputId}`;
     const element = this.renderer.selectRootElement(selector);
     if (element) {
       element.focus();
