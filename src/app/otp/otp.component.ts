@@ -89,7 +89,6 @@ export class OtpComponent implements OnInit {
     const clipboardData = event.clipboardData || (window as any).clipboardData;
     const pastedText = clipboardData.getData('text').trim();
     this.handlePastedText(pastedText, inputId);
-    // this.cdr.markForCheck();
   }
 
   // This function handles phone keyboard's clipboard event while avoid tampering keyup events
@@ -107,7 +106,6 @@ export class OtpComponent implements OnInit {
   }
 
   onKeydown(event: KeyboardEvent, inputId: number): void {
-    event.preventDefault();
     if (isNaN(Number(event.key)) && event.key !== 'Backspace') {
       return;
     }
@@ -125,8 +123,12 @@ export class OtpComponent implements OnInit {
     }
   }
 
-  onKeyup(event: KeyboardEvent, inputId: number) {
+  onKeypress(event: KeyboardEvent, inputId: number) {
     event.preventDefault();
+    // console.log('onKeypress', event);
+  }
+
+  onKeyup(event: KeyboardEvent, inputId: number) {
     this.isKeydownOn = false;
     // console.log('onKeyup', event);
   }
@@ -141,7 +143,9 @@ export class OtpComponent implements OnInit {
         OTPFormControls[`input${i}`].patchValue(OTPNumbers[i - inputId]);
       }
       const element = this.renderer.selectRootElement(`#input${Math.min(length + inputId, length)}`);
-      element.focus();
+      if (element) {
+        element.focus();
+      }
     }
   }
 
