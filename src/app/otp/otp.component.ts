@@ -87,7 +87,6 @@ export class OtpComponent implements OnInit {
   // This function handles paste event from Android/iOS keyboard's clipboard
   // while avoid tampering keyup events
   onInput(event: any, inputId: number): void {
-    console.log('onInput', event);
     event.preventDefault();
     const pastedText = event.target.value.toString();
     const OTPFormControls = this.OTPForm.controls;
