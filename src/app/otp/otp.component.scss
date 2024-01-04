@@ -388,40 +388,26 @@ $error-color: #dc3545;
       display: flex;
       padding: 0 86px;
       justify-content: space-between;
+      gap: 20px;
       @media(max-width: 767px) {
         padding: 0;
+        gap: 10px;
       }
 
-      .item-input {
-        flex: 1;
-        margin-left: 20px;
+      input {
         display: inline-block;
+        width: 74px;
+        height: 74px;
         text-align: center;
+        font-size: 26px;
+        font-weight: bold;
+        border-radius: 18px;
         @media(max-width: 767px) {
-          flex: none;
-          margin-left: 0;
-          width: calc(16.67% - 10px);
-        }
-
-        input {
-          display: inline-block;
-          width: 74px;
-          height: 74px;
-          text-align: center;
-          font-size: 26px;
-          font-weight: bold;
-          border-radius: 18px;
-          @media(max-width: 767px) {
-            width: 48px;
-            //padding: 4px;
-            height: 48px;
-            border-radius: 8px;
-            font-size: 24px;
-          }
-        }
-
-        &:first-child {
-          margin-left: 0;
+          width: 48px;
+          //padding: 4px;
+          height: 48px;
+          border-radius: 8px;
+          font-size: 24px;
         }
       }
     }

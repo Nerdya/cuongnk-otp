@@ -18,30 +18,18 @@
         </div>
         <form class="form-otp" [formGroup]="OTPForm">
           <div class="box-input">
-            <div class="item-input">
-              <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input0" id="input0" appOnlyNumber
-                     (paste)="onPaste($event)" (input)="onInput($event, 0)" (keyup)="onKeyup($event, 0)"/>
-            </div>
-            <div class="item-input">
-              <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input1" id="input1" appOnlyNumber
-                     (paste)="onPaste($event)" (input)="onInput($event, 1)" (keyup)="onKeyup($event, 1)"/>
-            </div>
-            <div class="item-input">
-              <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input2" id="input2" appOnlyNumber
-                     (paste)="onPaste($event)" (input)="onInput($event, 2)" (keyup)="onKeyup($event, 2)"/>
-            </div>
-            <div class="item-input">
-              <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input3" id="input3" appOnlyNumber
-                     (paste)="onPaste($event)" (input)="onInput($event, 3)" (keyup)="onKeyup($event, 3)"/>
-            </div>
-            <div class="item-input">
-              <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input4" id="input4" appOnlyNumber
-                     (paste)="onPaste($event)" (input)="onInput($event, 4)" (keyup)="onKeyup($event, 4)"/>
-            </div>
-            <div class="item-input">
-              <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input5" id="input5" appOnlyNumber
-                     (paste)="onPaste($event)" (input)="onInput($event, 5)" (keyup)="onKeyup($event, 5)"/>
-            </div>
+            <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input0" id="input0" appOnlyNumber (focus)="onFocus($event, 0)"
+                   (paste)="onPaste($event, 0)" (input)="onInput($event, 0)" (keydown)="onKeydown($event, 0)" (keyup)="onKeyup($event, 0)"/>
+            <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input1" id="input1" appOnlyNumber (focus)="onFocus($event, 1)"
+                   (paste)="onPaste($event, 1)" (input)="onInput($event, 1)" (keydown)="onKeydown($event, 1)" (keyup)="onKeyup($event, 1)"/>
+            <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input2" id="input2" appOnlyNumber (focus)="onFocus($event, 2)"
+                   (paste)="onPaste($event, 2)" (input)="onInput($event, 2)" (keydown)="onKeydown($event, 2)" (keyup)="onKeyup($event, 2)"/>
+            <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input3" id="input3" appOnlyNumber (focus)="onFocus($event, 3)"
+                   (paste)="onPaste($event, 3)" (input)="onInput($event, 3)" (keydown)="onKeydown($event, 3)" (keyup)="onKeyup($event, 3)"/>
+            <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input4" id="input4" appOnlyNumber (focus)="onFocus($event, 4)"
+                   (paste)="onPaste($event, 4)" (input)="onInput($event, 4)" (keydown)="onKeydown($event, 4)" (keyup)="onKeyup($event, 4)"/>
+            <input nz-input type="text" inputmode="numeric" autocomplete="one-time-code" formControlName="input5" id="input5" appOnlyNumber (focus)="onFocus($event, 5)"
+                   (paste)="onPaste($event, 5)" (input)="onInput($event, 5)" (keydown)="onKeydown($event, 5)" (keyup)="onKeyup($event, 5)"/>
           </div>
         </form>
         <div class="box-noti">

@@ -11,7 +11,7 @@ import en from '@angular/common/locales/en';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from "./shared/shared.module";
-import { HomeComponent } from './home/home.component';
+import {HomeComponent} from './home/home.component';
 
 registerLocaleData(en);
 

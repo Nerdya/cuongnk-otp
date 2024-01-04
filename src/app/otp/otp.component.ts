@@ -1,6 +1,6 @@
 import {Router} from '@angular/router';
 import {ChangeDetectorRef, Component, OnInit, Renderer2} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/internal/Observable';
 import {timer} from 'rxjs';
 import {map, take} from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class OtpComponent implements OnInit {
   OTPValid = true;
   OTPEmpty = false;
   isOTPVerified = false;
-  pasted = false;
+  isKeydownOn = false;
   loading = false;
   partner: any;
 
@@ -29,6 +29,7 @@ export class OtpComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
+    private fb: FormBuilder,
   ) {
   }
 
@@ -40,14 +41,14 @@ export class OtpComponent implements OnInit {
   }
 
   initFormOTP(): void {
-    const validators = [Validators.required, Validators.pattern('^([0-9]{1})$')];
-    this.OTPForm = new FormGroup({
-      input0: new FormControl('', validators),
-      input1: new FormControl('', validators),
-      input2: new FormControl('', validators),
-      input3: new FormControl('', validators),
-      input4: new FormControl('', validators),
-      input5: new FormControl('', validators),
+    const validators = [Validators.required, Validators.pattern(/^\d$/)];
+    this.OTPForm = this.fb.group({
+      input0: ['', validators],
+      input1: ['', validators],
+      input2: ['', validators],
+      input3: ['', validators],
+      input4: ['', validators],
+      input5: ['', validators],
     });
   }
 
@@ -59,69 +60,90 @@ export class OtpComponent implements OnInit {
     );
   }
 
-  isValidOTP(value: any): boolean {
-    return value.trim().length === 6 && /^[0-9]+$/.test(value);
+  getOTPValue() {
+    let OTPValue = '';
+    Object.keys(this.OTPForm.controls).forEach(key => {
+      OTPValue += this.OTPForm.get(key)?.value;
+    });
+    return OTPValue;
   }
 
-  isValidKeyupInput(value: string): boolean {
-    return value.trim().length === 1 && /^[0-9]+$/.test(value);
-  }
-
-  onPaste(event: ClipboardEvent): void {
-    event.preventDefault();
-    const clipboardData = event.clipboardData || (window as any).clipboardData;
-    const pastedText = clipboardData.getData('text').trim();
-    if (this.isValidOTP(pastedText)) {
-      const OTPFormControls = this.OTPForm.controls;
-      const OTPNumbers = pastedText.split('') || [];
-      for (let i = 0; i < 6; i++) {
-        OTPFormControls[`input${i}`].patchValue(OTPNumbers[i]);
-      }
-      const element = this.renderer.selectRootElement('#input5');
-      element.focus();
-      this.pasted = true;
-    }
-    this.cdr.markForCheck();
-  }
-
-  // This function handles paste event from Android/iOS keyboard's clipboard
-  // while avoid tampering keyup events
-  onInput(event: any, inputId: number): void {
-    event.preventDefault();
-    const pastedText = event.target.value.toString();
-    const OTPFormControls = this.OTPForm.controls;
-    // Return if the event is the (paste) event or the valid keyup event
-    if (this.pasted || this.isValidKeyupInput(pastedText)) {
-      return;
-    }
-    if (this.isValidOTP(pastedText)) {
-      const OTPNumbers = pastedText.split('') || [];
-      for (let i = 0; i < 6; i++) {
-        OTPFormControls[`input${i}`].patchValue(OTPNumbers[i]);
-      }
-      const element = this.renderer.selectRootElement('#input5');
+  onFocus(event: FocusEvent, inputId: number) {
+    if (this.getOTPValue().length === 0) {
+      event.preventDefault();
+      const element = this.renderer.selectRootElement(`#input0`);
       element.focus();
     } else {
-      // Delete the pasted string if it isn't valid but a number string, etc.
-      OTPFormControls[`input${inputId}`].patchValue('');
+      const element = this.renderer.selectRootElement(`#input${inputId}`);
+      element.select();
     }
   }
 
-  onKeyup(event: KeyboardEvent, inputId: number): void {
+  isValidNumberString(value: any): boolean {
+    return /^\d+$/.test(value);
+  }
+
+  onPaste(event: ClipboardEvent, inputId: number): void {
+    event.preventDefault();
+    // console.log('onPaste', event);
+    const clipboardData = event.clipboardData || (window as any).clipboardData;
+    const pastedText = clipboardData.getData('text').trim();
+    this.handlePastedText(pastedText, inputId);
+    // this.cdr.markForCheck();
+  }
+
+  // This function handles phone keyboard's clipboard event while avoid tampering keyup events
+  // Note:
+  // Gboard's clipboard event triggers 1 input event whose value is the whole OTP
+  // iPhone keyboard's clipboard event triggers 6 input events whose value are each digit of OTP respectively
+  onInput(event: any, inputId: number): void {
+    event.preventDefault();
+    if (this.isKeydownOn) {
+      return;
+    }
+    // console.log('onInput', event);
+    const pastedText = event.target.value.toString().trim();
+    this.handlePastedText(pastedText, inputId);
+  }
+
+  onKeydown(event: KeyboardEvent, inputId: number): void {
     if (isNaN(Number(event.key)) && event.key !== 'Backspace') {
       event.preventDefault();
       return;
     }
-
+    this.isKeydownOn = true;
+    // console.log('onKeydown', event);
+    // Determine the ID of the next input
     const nextInputId = event.key === 'Backspace' ? Math.max(0, inputId - 1) : Math.min(5, inputId + 1);
     const selector = `#input${nextInputId}`;
+    // Update the value of the current input
+    const control = this.OTPForm.controls[`input${inputId}`];
+    if (control) {
+      control.patchValue(event.key === 'Backspace' ? '' : event.key);
+    }
+    // Set focus to the next input
+    const element = this.renderer.selectRootElement(selector);
+    if (element) {
+      element.focus();
+    }
+  }
 
-    if (event.target instanceof HTMLElement && (event.target as HTMLInputElement).value.length === 1 || event.key === 'Backspace') {
-      const control = this.OTPForm.controls[`input${inputId}`];
-      if (control.value !== '') {
-        control.patchValue(event.key === 'Backspace' ? '' : event.key);
+  onKeyup(event: KeyboardEvent, inputId: number) {
+    event.preventDefault();
+    this.isKeydownOn = false;
+    // console.log('onKeyup', event);
+  }
+
+  handlePastedText(pastedText: string, inputId: number) {
+    const OTPFormControls = this.OTPForm.controls;
+    // If it's the iPhone clipboard event
+    if (this.isValidNumberString(pastedText)) {
+      const OTPNumbers = pastedText.split('') || [];
+      const length = Math.min(OTPNumbers.length + inputId, 6);
+      for (let i = inputId; i < length; i++) {
+        OTPFormControls[`input${i}`].patchValue(OTPNumbers[i - inputId]);
       }
-      const element = this.renderer.selectRootElement(selector);
+      const element = this.renderer.selectRootElement(`#input${Math.min(length + inputId, length)}`);
       element.focus();
     }
   }
@@ -177,10 +199,7 @@ export class OtpComponent implements OnInit {
       return;
     }
     this.loading = true;
-    let OTPValue = '';
-    Object.keys(this.OTPForm.controls).forEach(key => {
-      OTPValue += this.OTPForm.get(key)?.value;
-    });
+    let OTPValue = this.getOTPValue();
     alert(OTPValue);
     this.toHome();
     // const payload = {
